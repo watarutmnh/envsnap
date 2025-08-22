@@ -11,4 +11,10 @@ export default defineConfig({
   target: 'es2020',
   globalName: 'EnvSnap',
   platform: 'browser',
+  // Export the class directly for IIFE build
+  footer: {
+    js: `if (typeof window !== 'undefined' && window.EnvSnap && window.EnvSnap.default) {
+      window.EnvSnap = window.EnvSnap.default;
+    }`,
+  },
 });
