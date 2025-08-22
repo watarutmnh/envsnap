@@ -1,0 +1,50 @@
+{
+  "name": "envsnap",
+  "version": "1.0.0",
+  "description": "Lightweight JavaScript library to collect and share client environment information for bug reports",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "environment",
+    "browser",
+    "detection",
+    "debug",
+    "bug-report",
+    "client-info",
+    "system-info"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/envsnap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/envsnap/issues"
+  },
+  "homepage": "https://github.com/yourusername/envsnap#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  }
+}
