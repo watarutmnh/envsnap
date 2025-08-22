@@ -1,5 +1,5 @@
 {
-  "name": "envsnap",
+  "name": "@watarutmnh/envsnap",
   "version": "1.0.0",
   "description": "Lightweight JavaScript library to collect and share client environment information for bug reports",
   "main": "./dist/index.js",
