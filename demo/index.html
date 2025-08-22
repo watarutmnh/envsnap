@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnvSnap - Environment Information Collector Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .output {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .output:empty::before {
+            content: 'Click "Collect Environment Info" to get started...';
+            color: #999;
+            font-style: italic;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .toast.show {
+            display: block;
+        }
+        
+        .toast.error {
+            background: #dc3545;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 16px;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .tab:hover {
+            color: #667eea;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+        
+        .json-output {
+            display: none;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            color: #666;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span>🔍</span>
+            EnvSnap
+        </h1>
+        <p class="subtitle">Instantly capture and share your environment information for better bug reports</p>
+        
+        <div class="buttons">
+            <button id="collectBtn" onclick="collectInfo()">
+                <span>📊</span>
+                Collect Environment Info
+            </button>
+            <button id="copyBtn" onclick="copyToClipboard()" disabled>
+                <span>📋</span>
+                Copy to Clipboard
+            </button>
+            <button id="downloadBtn" onclick="downloadInfo()" disabled>
+                <span>💾</span>
+                Download as Text
+            </button>
+            <button id="refreshBtn" onclick="location.reload()">
+                <span>🔄</span>
+                Refresh Page
+            </button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('text')">Text Format</button>
+            <button class="tab" onclick="switchTab('json')">JSON Format</button>
+        </div>
+        
+        <div class="output" id="textOutput"></div>
+        <div class="output json-output" id="jsonOutput"></div>
+        
+        <div class="footer">
+            <p>
+                Made with ❤️ by <a href="https://github.com/watarutmnh/envsnap" target="_blank">EnvSnap</a>
+                | <a href="https://github.com/watarutmnh/envsnap" target="_blank">GitHub</a>
+                | <a href="https://www.npmjs.com/package/@watarutmnh/envsnap" target="_blank">npm</a>
+            </p>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script src="../dist/index.js"></script>
+    <script>
+        let currentData = null;
+        let currentTab = 'text';
+        
+        function collectInfo() {
+            const btn = document.getElementById('collectBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Collecting...';
+            
+            setTimeout(() => {
+                try {
+                    currentData = EnvSnap.collect();
+                    
+                    // Display in text format
+                    document.getElementById('textOutput').textContent = EnvSnap.format(currentData);
+                    
+                    // Display in JSON format
+                    document.getElementById('jsonOutput').textContent = JSON.stringify(currentData, null, 2);
+                    
+                    // Enable other buttons
+                    document.getElementById('copyBtn').disabled = false;
+                    document.getElementById('downloadBtn').disabled = false;
+                    
+                    showToast('Environment information collected successfully!');
+                } catch (error) {
+                    showToast('Error collecting information: ' + error.message, true);
+                    console.error(error);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>📊</span> Collect Environment Info';
+                }
+            }, 500);
+        }
+        
+        async function copyToClipboard() {
+            if (!currentData) return;
+            
+            const btn = document.getElementById('copyBtn');
+            btn.disabled = true;
+            
+            try {
+                if (currentTab === 'text') {
+                    await EnvSnap.copyToClipboard(currentData);
+                } else {
+                    const jsonText = JSON.stringify(currentData, null, 2);
+                    await navigator.clipboard.writeText(jsonText);
+                }
+                showToast('Copied to clipboard!');
+            } catch (error) {
+                showToast('Failed to copy: ' + error.message, true);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        
+        function downloadInfo() {
+            if (!currentData) return;
+            
+            if (currentTab === 'text') {
+                EnvSnap.download(currentData);
+            } else {
+                const jsonText = JSON.stringify(currentData, null, 2);
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const fileName = `envsnap_${timestamp}.json`;
+                
+                const blob = new Blob([jsonText], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                URL.revokeObjectURL(url);
+            }
+            
+            showToast('File downloaded!');
+        }
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab styles
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide outputs
+            if (tab === 'text') {
+                document.getElementById('textOutput').style.display = 'block';
+                document.getElementById('jsonOutput').style.display = 'none';
+            } else {
+                document.getElementById('textOutput').style.display = 'none';
+                document.getElementById('jsonOutput').style.display = 'block';
+            }
+        }
+        
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Auto-collect on page load
+        window.addEventListener('load', () => {
+            setTimeout(collectInfo, 500);
+        });
+    </script>
+</body>
+</html>
