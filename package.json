@@ -27,16 +27,16 @@
     "client-info",
     "system-info"
   ],
-  "author": "",
+  "author": "Wataru Tamanaha <wataru@cdgrph.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/envsnap.git"
+    "url": "git+https://github.com/watarutmnh/envsnap.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/envsnap/issues"
+    "url": "https://github.com/watarutmnh/envsnap/issues"
   },
-  "homepage": "https://github.com/yourusername/envsnap#readme",
+  "homepage": "https://github.com/watarutmnh/envsnap#readme",
   "files": [
     "dist",
     "README.md",

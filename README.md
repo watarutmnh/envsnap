@@ -1,7 +1,7 @@
 # 🔍 EnvSnap
 
 [![npm version](https://badge.fury.io/js/envsnap.svg)](https://badge.fury.io/js/envsnap)
-[![CI](https://github.com/yourusername/envsnap/workflows/CI/badge.svg)](https://github.com/yourusername/envsnap/actions)
+[![CI](https://github.com/watarutmnh/envsnap/workflows/CI/badge.svg)](https://github.com/watarutmnh/envsnap/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
@@ -174,7 +174,7 @@ const browser: BrowserInfo = envInfo.browser;
 
 ## 🎮 Try the Demo
 
-Visit our [live demo](https://yourusername.github.io/envsnap) to see EnvSnap in action!
+Visit our [live demo](https://watarutmnh.github.io/envsnap) to see EnvSnap in action!
 
 ## 🤝 Contributing
 
