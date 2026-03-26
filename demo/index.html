@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EnvSnap - Environment Information Collector Demo</title>
+    <title>EnvSnap</title>
 
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -35,11 +32,19 @@
                             DEFAULT: 'hsl(var(--accent))',
                             foreground: 'hsl(var(--accent-foreground))',
                         },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))',
+                        },
                     },
                     borderRadius: {
-                        lg: '0.5rem',
-                        md: '0.375rem',
-                        sm: '0.25rem',
+                        lg: 'var(--radius)',
+                        md: 'calc(var(--radius) - 2px)',
+                        sm: 'calc(var(--radius) - 4px)',
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        mono: ['SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro', 'monospace'],
                     },
                 }
             }
@@ -48,509 +53,184 @@
 
     <style>
         :root {
-            --border: 214.3 31.8% 91.4%;
-            --input: 214.3 31.8% 91.4%;
-            --ring: 221.2 83.2% 53.3%;
             --background: 0 0% 100%;
-            --foreground: 222.2 84% 4.9%;
-            --primary: 221.2 83.2% 53.3%;
-            --primary-foreground: 210 40% 98%;
-            --secondary: 210 40% 96.1%;
-            --secondary-foreground: 222.2 47.4% 11.2%;
-            --muted: 210 40% 96.1%;
-            --muted-foreground: 215.4 16.3% 46.9%;
-            --accent: 210 40% 96.1%;
-            --accent-foreground: 222.2 47.4% 11.2%;
+            --foreground: 240 10% 3.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 240 10% 3.9%;
+            --primary: 240 5.9% 10%;
+            --primary-foreground: 0 0% 98%;
+            --secondary: 240 4.8% 95.9%;
+            --secondary-foreground: 240 5.9% 10%;
+            --muted: 240 4.8% 95.9%;
+            --muted-foreground: 240 3.8% 46.1%;
+            --accent: 240 4.8% 95.9%;
+            --accent-foreground: 240 5.9% 10%;
+            --border: 240 5.9% 90%;
+            --input: 240 5.9% 90%;
+            --ring: 240 5.9% 10%;
+            --radius: 0.625rem;
         }
 
-        @layer base {
-            * {
-                @apply border-border;
-            }
-            body {
-                @apply bg-gradient-to-br from-slate-50 to-slate-100 text-foreground;
-                font-feature-settings: "rlig" 1, "calt" 1;
-            }
-        }
+        * { border-color: hsl(var(--border)); }
+        body { font-feature-settings: "rlig" 1, "calt" 1; }
 
-        /* Custom scrollbar styling */
-        .output-container::-webkit-scrollbar {
-            width: 8px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .fade-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .fade-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .fade-in-delay-3 { animation-delay: 0.3s; opacity: 0; }
 
-        .output-container::-webkit-scrollbar-track {
-            background: hsl(var(--secondary));
-            border-radius: 4px;
+        @keyframes checkmark {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
+        .checkmark-animate { animation: checkmark 0.3s ease-out; }
 
-        .output-container::-webkit-scrollbar-thumb {
-            background: hsl(var(--muted-foreground));
-            border-radius: 4px;
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .output-container::-webkit-scrollbar-thumb:hover {
-            background: hsl(215.4 16.3% 36.9%);
-        }
-
-        /* Loading spinner animation */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-
-        /* Toast slide-in animation */
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .toast-show {
-            animation: slideIn 0.3s ease;
-        }
-
-        /* Tab indicator transition */
-        .tab-indicator {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Button ripple effect */
-        .btn-ripple {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-ripple::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn-ripple:active::after {
-            width: 300px;
-            height: 300px;
-        }
+        .slide-up { animation: slideUp 0.3s ease-out; }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
-    <!-- Main Container -->
-    <div class="max-w-5xl mx-auto">
-        <!-- Header Card -->
-        <div class="bg-white rounded-lg shadow-sm border border-border p-6 mb-6">
-            <div class="flex items-start justify-between">
-                <div>
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </div>
-                        <h1 class="text-3xl font-bold text-foreground">EnvSnap</h1>
-                    </div>
-                    <p class="text-muted-foreground text-sm md:text-base">
-                        Instantly capture and share your environment information for better bug reports
-                    </p>
-                </div>
+<body class="min-h-screen bg-background text-foreground">
 
-                <!-- Status Badge -->
-                <div id="statusBadge" class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-md text-sm font-medium">
-                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span class="text-secondary-foreground">Auto-loaded</span>
-                </div>
+    <div class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+        <div class="w-full max-w-lg space-y-6">
+
+            <!-- Header -->
+            <div class="text-center space-y-2 fade-in">
+                <h1 class="text-2xl font-semibold tracking-tight">EnvSnap</h1>
+                <p class="text-sm text-muted-foreground">
+                    Your browser environment info. Click copy and share it.
+                </p>
             </div>
-        </div>
 
-        <!-- Action Buttons -->
-        <div class="bg-white rounded-lg shadow-sm border border-border p-4 mb-6">
-            <div class="flex flex-wrap gap-3">
-                <!-- Copy to Clipboard Button -->
+            <!-- Environment Cards -->
+            <div id="envCards" class="grid grid-cols-2 gap-3 fade-in fade-in-delay-1">
+                <!-- Cards are populated by JS -->
+            </div>
+
+            <!-- Copy Button -->
+            <div class="fade-in fade-in-delay-2">
                 <button
                     id="copyBtn"
-                    onclick="copyToClipboard()"
+                    onclick="handleCopy()"
                     disabled
-                    class="btn-ripple inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    class="w-full inline-flex items-center justify-center gap-2 h-11 px-6 rounded-md bg-primary text-primary-foreground text-sm font-medium transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                 >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    <svg id="copyIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
                     </svg>
-                    <span>Copy to Clipboard</span>
+                    <span id="copyText">Copy to Clipboard</span>
                 </button>
-
-                <!-- Download JSON Button -->
-                <button
-                    id="downloadBtn"
-                    onclick="downloadJSON()"
-                    disabled
-                    class="btn-ripple inline-flex items-center justify-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                    <span>Download JSON</span>
-                </button>
-
-                <!-- Manual Refresh Button -->
-                <button
-                    id="refreshBtn"
-                    onclick="manualRefresh()"
-                    class="btn-ripple inline-flex items-center justify-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    <span>Refresh</span>
-                </button>
-
-                <!-- Auto-refresh indicator -->
-                <div class="ml-auto hidden md:flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    <span>Auto-refreshes on resize</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Content Card with Tabs -->
-        <div class="bg-white rounded-lg shadow-sm border border-border overflow-hidden">
-            <!-- Tabs Header -->
-            <div class="border-b border-border">
-                <div class="flex">
-                    <button
-                        class="tab-btn relative px-6 py-3 text-sm font-medium transition-colors focus:outline-none"
-                        data-tab="text"
-                        onclick="switchTab('text')"
-                    >
-                        <span class="relative z-10">Text Format</span>
-                    </button>
-                    <button
-                        class="tab-btn relative px-6 py-3 text-sm font-medium transition-colors focus:outline-none"
-                        data-tab="json"
-                        onclick="switchTab('json')"
-                    >
-                        <span class="relative z-10">JSON Format</span>
-                    </button>
-                </div>
-                <div id="tabIndicator" class="tab-indicator h-0.5 bg-primary" style="width: 0; margin-left: 0;"></div>
             </div>
 
-            <!-- Tabs Content -->
-            <div class="p-6">
-                <!-- Text Output -->
-                <div id="textOutput" class="output-container font-mono text-sm whitespace-pre-wrap break-words max-h-[600px] overflow-y-auto p-4 bg-muted/30 rounded-md border border-border">
-                    <div class="flex items-center justify-center py-12 text-muted-foreground">
-                        <div class="text-center">
-                            <div class="loading-spinner w-8 h-8 border-4 border-muted border-t-primary rounded-full mx-auto mb-3"></div>
-                            <p>Loading environment information...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- JSON Output -->
-                <div id="jsonOutput" class="output-container hidden font-mono text-sm whitespace-pre-wrap break-words max-h-[600px] overflow-y-auto p-4 bg-muted/30 rounded-md border border-border">
-                </div>
+            <!-- Post-copy message (hidden by default) -->
+            <div id="postCopy" class="hidden text-center">
+                <p class="text-sm text-muted-foreground">
+                    Paste it into your chat, email, or support ticket.
+                </p>
             </div>
-        </div>
 
-        <!-- Footer -->
-        <div class="mt-6 text-center text-sm text-muted-foreground">
-            <p>
-                Made with
-                <svg class="inline w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                </svg>
-                by
-                <a href="https://github.com/watarutmnh/envsnap" target="_blank" class="text-primary hover:underline">EnvSnap</a>
-                &middot;
-                <a href="https://github.com/watarutmnh/envsnap" target="_blank" class="text-primary hover:underline">GitHub</a>
-                &middot;
-                <a href="https://www.npmjs.com/package/@watarutmnh/envsnap" target="_blank" class="text-primary hover:underline">npm</a>
-            </p>
+            <!-- Footer -->
+            <div class="text-center fade-in fade-in-delay-3">
+                <p class="text-xs text-muted-foreground">
+                    Powered by <a href="https://github.com/watarutmnh/envsnap" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4 hover:text-foreground transition-colors">EnvSnap</a>
+                </p>
+            </div>
+
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="hidden fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium z-50">
-        <div class="flex items-center gap-2">
-            <svg id="toastIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
-            <span id="toastMessage"></span>
-        </div>
-    </div>
-
-    <!-- EnvSnap Library from CDN -->
     <script src="https://unpkg.com/@watarutmnh/envsnap@latest/dist/index.global.js"></script>
-
     <script>
-        // Global state
-        let currentData = null;
-        let currentTab = 'text';
-        let resizeTimeout = null;
+        let envData = null;
 
-        /**
-         * Collects environment information and updates the display
-         */
-        function collectInfo() {
+        const cardConfig = [
+            { key: 'browser', label: 'Browser',  icon: 'globe',   format: d => `${d.browser.name} ${d.browser.version}` },
+            { key: 'os',      label: 'OS',       icon: 'monitor', format: d => `${d.os.name} ${d.os.version}`.trim() },
+            { key: 'screen',  label: 'Screen',   icon: 'layout',  format: d => `${d.screen.screenWidth} × ${d.screen.screenHeight}` },
+            { key: 'device',  label: 'Device',   icon: 'cpu',     format: d => d.device.isMobile ? 'Mobile' : d.device.isTablet ? 'Tablet' : 'Desktop' },
+            { key: 'network', label: 'Network',  icon: 'wifi',    format: d => d.network.supported ? (d.network.type || (d.network.onLine ? 'Online' : 'Offline')) : (d.network.onLine ? 'Online' : 'Offline') },
+            { key: 'tz',      label: 'Timezone',  icon: 'clock',   format: d => d.timezone.timezone || 'Unknown' },
+        ];
+
+        const icons = {
+            globe: '<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"></path>',
+            monitor: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>',
+            layout: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>',
+            cpu: '<rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line>',
+            wifi: '<path d="M5 12.55a11 11 0 0114.08 0"></path><path d="M1.42 9a16 16 0 0121.16 0"></path><path d="M8.53 16.11a6 6 0 016.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line>',
+            clock: '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>',
+        };
+
+        function renderCards() {
+            const container = document.getElementById('envCards');
+            container.innerHTML = cardConfig.map(card => {
+                const value = envData ? card.format(envData) : '...';
+                return `
+                    <div class="rounded-lg border bg-card p-4 space-y-2">
+                        <div class="flex items-center gap-2 text-muted-foreground">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">${icons[card.icon]}</svg>
+                            <span class="text-xs font-medium">${card.label}</span>
+                        </div>
+                        <p class="text-sm font-medium truncate" title="${value}">${value}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function collectAndRender() {
             try {
-                // Collect environment data
-                currentData = EnvSnap.collect();
-
-                // Update text format display
-                document.getElementById('textOutput').textContent = EnvSnap.format(currentData);
-
-                // Update JSON format display
-                document.getElementById('jsonOutput').textContent = JSON.stringify(currentData, null, 2);
-
-                // Enable action buttons
+                envData = await EnvSnap.collect();
+                renderCards();
                 document.getElementById('copyBtn').disabled = false;
-                document.getElementById('downloadBtn').disabled = false;
-
-                // Show status badge
-                const statusBadge = document.getElementById('statusBadge');
-                statusBadge.classList.remove('hidden');
-                statusBadge.classList.add('flex');
-
-            } catch (error) {
-                showToast('Error collecting information: ' + error.message, 'error');
-                console.error('EnvSnap collection error:', error);
-
-                // Show error message in output
-                const errorMsg = `Error: ${error.message}\n\nPlease refresh the page and try again.`;
-                document.getElementById('textOutput').textContent = errorMsg;
-                document.getElementById('jsonOutput').textContent = errorMsg;
+            } catch (e) {
+                console.error('EnvSnap error:', e);
             }
         }
 
-        /**
-         * Copies current data to clipboard (respects current tab format)
-         */
-        async function copyToClipboard() {
-            if (!currentData) return;
+        async function handleCopy() {
+            if (!envData) return;
 
             const btn = document.getElementById('copyBtn');
-            const originalContent = btn.innerHTML;
+            const icon = document.getElementById('copyIcon');
+            const text = document.getElementById('copyText');
             btn.disabled = true;
 
             try {
-                if (currentTab === 'text') {
-                    // Use EnvSnap's built-in copy method for text format
-                    await EnvSnap.copyToClipboard(currentData);
-                } else {
-                    // Copy JSON format
-                    const jsonText = JSON.stringify(currentData, null, 2);
-                    await navigator.clipboard.writeText(jsonText);
-                }
+                await EnvSnap.copyToClipboard(envData);
 
-                // Success feedback
-                btn.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span>Copied!</span>
-                `;
+                icon.outerHTML = `<svg id="copyIcon" class="w-4 h-4 checkmark-animate" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                text.textContent = 'Copied!';
+                btn.classList.remove('bg-primary', 'hover:bg-primary/90');
+                btn.classList.add('bg-emerald-600', 'hover:bg-emerald-600');
 
-                showToast('Copied to clipboard successfully!', 'success');
+                const postCopy = document.getElementById('postCopy');
+                postCopy.classList.remove('hidden');
+                postCopy.classList.add('slide-up');
 
-                // Reset button after 2 seconds
                 setTimeout(() => {
-                    btn.innerHTML = originalContent;
+                    document.getElementById('copyIcon').outerHTML = `<svg id="copyIcon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>`;
+                    text.textContent = 'Copy to Clipboard';
+                    btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-600');
+                    btn.classList.add('bg-primary', 'hover:bg-primary/90');
                     btn.disabled = false;
                 }, 2000);
-
-            } catch (error) {
-                btn.innerHTML = originalContent;
+            } catch (e) {
+                text.textContent = 'Failed to copy';
                 btn.disabled = false;
-                showToast('Failed to copy: ' + error.message, 'error');
-                console.error('Copy error:', error);
+                setTimeout(() => { text.textContent = 'Copy to Clipboard'; }, 2000);
             }
         }
 
-        /**
-         * Downloads data as JSON file
-         */
-        function downloadJSON() {
-            if (!currentData) return;
-
-            try {
-                // Create JSON blob
-                const jsonText = JSON.stringify(currentData, null, 2);
-                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                const fileName = `envsnap_${timestamp}.json`;
-
-                const blob = new Blob([jsonText], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-
-                // Create temporary download link
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = fileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                // Clean up object URL
-                URL.revokeObjectURL(url);
-
-                showToast('JSON file downloaded successfully!', 'success');
-
-            } catch (error) {
-                showToast('Failed to download: ' + error.message, 'error');
-                console.error('Download error:', error);
-            }
-        }
-
-        /**
-         * Manual refresh button handler
-         */
-        function manualRefresh() {
-            const btn = document.getElementById('refreshBtn');
-            const originalContent = btn.innerHTML;
-
-            // Show loading state
-            btn.disabled = true;
-            btn.innerHTML = `
-                <div class="loading-spinner w-4 h-4 border-2 border-secondary-foreground/20 border-t-secondary-foreground rounded-full"></div>
-                <span>Refreshing...</span>
-            `;
-
-            // Simulate refresh delay for better UX
-            setTimeout(() => {
-                collectInfo();
-                btn.innerHTML = originalContent;
-                btn.disabled = false;
-                showToast('Environment info refreshed!', 'success');
-            }, 500);
-        }
-
-        /**
-         * Switches between Text and JSON tabs
-         */
-        function switchTab(tab) {
-            currentTab = tab;
-
-            // Update tab button styles
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(t => {
-                if (t.dataset.tab === tab) {
-                    t.classList.add('text-primary');
-                    t.classList.remove('text-muted-foreground', 'hover:text-foreground');
-                } else {
-                    t.classList.remove('text-primary');
-                    t.classList.add('text-muted-foreground', 'hover:text-foreground');
-                }
-            });
-
-            // Update tab indicator position
-            const activeTab = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
-            const indicator = document.getElementById('tabIndicator');
-            indicator.style.width = activeTab.offsetWidth + 'px';
-            indicator.style.marginLeft = activeTab.offsetLeft + 'px';
-
-            // Toggle output visibility
-            if (tab === 'text') {
-                document.getElementById('textOutput').classList.remove('hidden');
-                document.getElementById('jsonOutput').classList.add('hidden');
-            } else {
-                document.getElementById('textOutput').classList.add('hidden');
-                document.getElementById('jsonOutput').classList.remove('hidden');
-            }
-        }
-
-        /**
-         * Shows toast notification
-         * @param {string} message - Message to display
-         * @param {string} type - Type of toast: 'success' or 'error'
-         */
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            const toastIcon = document.getElementById('toastIcon');
-
-            // Set message
-            toastMessage.textContent = message;
-
-            // Set icon and color based on type
-            if (type === 'success') {
-                toast.className = 'toast-show fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium z-50 bg-green-600';
-                toastIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
-            } else {
-                toast.className = 'toast-show fixed bottom-6 right-6 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium z-50 bg-red-600';
-                toastIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
-            }
-
-            // Show toast
-            toast.classList.remove('hidden');
-
-            // Hide after 3 seconds
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        /**
-         * Debounced window resize handler
-         * Auto-refreshes environment info when window is resized
-         */
-        function handleResize() {
-            // Clear existing timeout
-            if (resizeTimeout) {
-                clearTimeout(resizeTimeout);
-            }
-
-            // Set new timeout (500ms debounce)
-            resizeTimeout = setTimeout(() => {
-                collectInfo();
-                console.log('Environment info auto-refreshed on resize');
-            }, 500);
-        }
-
-        /**
-         * Initialize the application
-         */
-        function init() {
-            // Set initial tab indicator position
-            const activeTab = document.querySelector('.tab-btn[data-tab="text"]');
-            const indicator = document.getElementById('tabIndicator');
-            indicator.style.width = activeTab.offsetWidth + 'px';
-            indicator.style.marginLeft = activeTab.offsetLeft + 'px';
-
-            // Mark initial tab as active
-            activeTab.classList.add('text-primary');
-            document.querySelectorAll('.tab-btn:not([data-tab="text"])').forEach(tab => {
-                tab.classList.add('text-muted-foreground', 'hover:text-foreground');
-            });
-
-            // Auto-collect on page load
-            setTimeout(() => {
-                collectInfo();
-                showToast('Environment information loaded!', 'success');
-            }, 500);
-        }
-
-        // Event listeners
-        window.addEventListener('load', init);
-        window.addEventListener('resize', handleResize);
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            if (resizeTimeout) {
-                clearTimeout(resizeTimeout);
-            }
-        });
+        renderCards();
+        window.addEventListener('load', collectAndRender);
     </script>
 </body>
 </html>
