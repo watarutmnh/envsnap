@@ -1,0 +1,40 @@
+# Source files
+src/
+tsconfig.json
+tsup.config.ts
+
+# Demo
+demo/
+
+# GitHub
+.github/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+*.test.ts
+*.spec.ts
+
+# Development
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+.temp/
