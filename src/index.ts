@@ -85,12 +85,12 @@ class EnvSnap {
     if ((navigator as any).userAgentData) {
       try {
         const hints = await (navigator as any).userAgentData.getHighEntropyValues([
-          'platform', 'platformVersion', 'bitness'
+          'platform', 'platformVersion', 'architecture', 'bitness'
         ]);
         return {
           name: hints.platform || 'Unknown',
           version: hints.platformVersion || '',
-          platform: navigator.platform,
+          platform: hints.architecture || navigator.platform,
           is64Bit: hints.bitness === '64'
         };
       } catch {
