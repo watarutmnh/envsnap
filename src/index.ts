@@ -12,6 +12,8 @@ import type {
 export * from './types';
 
 class EnvSnap {
+  static readonly version = '1.2.0';
+
   /**
    * Collect all environment information
    */
@@ -266,69 +268,69 @@ class EnvSnap {
       data = await this.collect();
     }
 
-    let output = '=== Environment Snapshot ===\n';
+    let output = 'Environment Snapshot\n';
     output += `Generated: ${data.timestamp}\n\n`;
 
     // Browser Information
-    output += '📱 Browser\n';
-    output += `  • Name: ${data.browser.name} ${data.browser.version}\n`;
-    output += `  • Language: ${data.browser.language}\n`;
-    output += `  • Online: ${data.browser.onLine ? 'Yes' : 'No'}\n`;
-    output += `  • Cookies: ${data.browser.cookieEnabled ? 'Enabled' : 'Disabled'}\n\n`;
+    output += '[Browser]\n';
+    output += `  Name: ${data.browser.name} ${data.browser.version}\n`;
+    output += `  Language: ${data.browser.language}\n`;
+    output += `  Online: ${data.browser.onLine ? 'Yes' : 'No'}\n`;
+    output += `  Cookies: ${data.browser.cookieEnabled ? 'Enabled' : 'Disabled'}\n\n`;
 
     // OS Information
-    output += '💻 Operating System\n';
-    output += `  • OS: ${data.os.name} ${data.os.version}\n`;
-    output += `  • Platform: ${data.os.platform}\n`;
-    output += `  • 64-bit: ${data.os.is64Bit ? 'Yes' : 'No/Unknown'}\n\n`;
+    output += '[OS]\n';
+    output += `  Name: ${data.os.name} ${data.os.version}\n`;
+    output += `  Platform: ${data.os.platform}\n`;
+    output += `  64-bit: ${data.os.is64Bit ? 'Yes' : 'No/Unknown'}\n\n`;
 
     // Screen Information
-    output += '🖥️ Screen\n';
-    output += `  • Resolution: ${data.screen.screenWidth} × ${data.screen.screenHeight}\n`;
-    output += `  • Viewport: ${data.screen.viewportWidth} × ${data.screen.viewportHeight}\n`;
-    output += `  • Color Depth: ${data.screen.colorDepth}-bit\n`;
-    output += `  • Pixel Ratio: ${data.device.devicePixelRatio}\n\n`;
+    output += '[Screen]\n';
+    output += `  Resolution: ${data.screen.screenWidth} x ${data.screen.screenHeight}\n`;
+    output += `  Viewport: ${data.screen.viewportWidth} x ${data.screen.viewportHeight}\n`;
+    output += `  Color Depth: ${data.screen.colorDepth}-bit\n`;
+    output += `  Pixel Ratio: ${data.device.devicePixelRatio}\n\n`;
 
     // Device Information
-    output += '📟 Device\n';
-    output += `  • Touch Support: ${data.device.touchSupport ? 'Yes' : 'No'}\n`;
-    output += `  • Mobile: ${data.device.isMobile ? 'Yes' : 'No'}\n`;
-    output += `  • Tablet: ${data.device.isTablet ? 'Yes' : 'No'}\n`;
-    output += `  • CPU Cores: ${data.device.hardwareConcurrency}\n\n`;
+    output += '[Device]\n';
+    output += `  Touch: ${data.device.touchSupport ? 'Yes' : 'No'}\n`;
+    output += `  Mobile: ${data.device.isMobile ? 'Yes' : 'No'}\n`;
+    output += `  Tablet: ${data.device.isTablet ? 'Yes' : 'No'}\n`;
+    output += `  CPU Cores: ${data.device.hardwareConcurrency}\n\n`;
 
     // Network Information
-    output += '🌐 Network\n';
+    output += '[Network]\n';
     if (data.network.supported) {
       if (data.network.type) {
-        output += `  • Connection: ${data.network.type}\n`;
+        output += `  Connection: ${data.network.type}\n`;
       }
       if (data.network.downlink !== undefined) {
-        output += `  • Downlink: ${data.network.downlink} Mbps\n`;
+        output += `  Downlink: ${data.network.downlink} Mbps\n`;
       }
       if (data.network.rtt !== undefined) {
-        output += `  • RTT: ${data.network.rtt} ms\n`;
+        output += `  RTT: ${data.network.rtt} ms\n`;
       }
-      output += `  • Data Saver: ${data.network.saveData ? 'On' : 'Off'}\n\n`;
+      output += `  Data Saver: ${data.network.saveData ? 'On' : 'Off'}\n\n`;
     } else {
-      output += `  • Status: ${data.network.onLine ? 'Online' : 'Offline'}\n`;
-      output += `  • Details: Not available\n\n`;
+      output += `  Status: ${data.network.onLine ? 'Online' : 'Offline'}\n`;
+      output += `  Details: Not available\n\n`;
     }
 
     // Storage Information
-    output += '💾 Storage\n';
-    output += `  • Local Storage: ${data.storage.localStorage ? '✓' : '✗'}\n`;
-    output += `  • Session Storage: ${data.storage.sessionStorage ? '✓' : '✗'}\n`;
-    output += `  • IndexedDB: ${data.storage.indexedDB ? '✓' : '✗'}\n`;
-    output += `  • Service Worker: ${data.storage.serviceWorker ? '✓' : '✗'}\n\n`;
+    output += '[Storage]\n';
+    output += `  Local Storage: ${data.storage.localStorage ? 'Yes' : 'No'}\n`;
+    output += `  Session Storage: ${data.storage.sessionStorage ? 'Yes' : 'No'}\n`;
+    output += `  IndexedDB: ${data.storage.indexedDB ? 'Yes' : 'No'}\n`;
+    output += `  Service Worker: ${data.storage.serviceWorker ? 'Yes' : 'No'}\n\n`;
 
     // Timezone Information
-    output += '🕐 Timezone\n';
-    output += `  • Zone: ${data.timezone.timezone}\n`;
-    output += `  • Offset: UTC${data.timezone.timezoneOffset > 0 ? '-' : '+'}${Math.abs(data.timezone.timezoneOffset / 60)}\n`;
-    output += `  • Locale: ${data.timezone.locale}\n\n`;
+    output += '[Timezone]\n';
+    output += `  Zone: ${data.timezone.timezone}\n`;
+    output += `  Offset: UTC${data.timezone.timezoneOffset > 0 ? '-' : '+'}${Math.abs(data.timezone.timezoneOffset / 60)}\n`;
+    output += `  Locale: ${data.timezone.locale}\n\n`;
 
     // User Agent
-    output += '🔍 User Agent\n';
+    output += '[User Agent]\n';
     output += `  ${data.userAgent}\n`;
 
     return output;

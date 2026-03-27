@@ -53,3 +53,4 @@ dist/           # Build artifacts (not tracked in Git)
 ## References
 
 @ARCHITECTURE.md — Design constraints
+@AGENTS.local.md — Local overrides (not tracked in git)
