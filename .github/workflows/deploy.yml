@@ -31,10 +31,11 @@ jobs:
 
     - name: Prepare deploy directory
       run: |
-        mkdir -p _site/demo/dist
+        mkdir -p _site/demo/dist _site/demo/fonts
         cp index.html _site/
         cp demo/index.html _site/demo/
         cp dist/index.global.js _site/demo/dist/
+        cp demo/fonts/*.otf _site/demo/fonts/ 2>/dev/null || true
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
