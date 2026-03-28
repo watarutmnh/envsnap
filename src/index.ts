@@ -92,11 +92,14 @@ class EnvSnap {
         return {
           name: hints.platform || 'Unknown',
           version: hints.platformVersion || '',
+          versionEstimated: false,
           platform: hints.architecture || navigator.platform,
+          platformEstimated: false,
           is64Bit: hints.bitness === '64'
         };
       } catch {
-        // Fall through to UA string parsing
+        // getHighEntropyValues() rejected (e.g., cross-origin iframe, permissions policy)
+        // Fall through to UA string parsing with estimated flags
       }
     }
 
@@ -144,7 +147,9 @@ class EnvSnap {
     return {
       name: os,
       version: osVersion,
+      versionEstimated: true,
       platform: platform,
+      platformEstimated: true,
       is64Bit
     };
   }
