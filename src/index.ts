@@ -12,7 +12,7 @@ import type {
 export * from './types';
 
 class EnvSnap {
-  static readonly version = '1.2.0';
+  static readonly version = '1.3.0';
 
   /**
    * Collect all environment information
