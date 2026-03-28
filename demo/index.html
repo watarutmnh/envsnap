@@ -172,17 +172,18 @@
             color: rgba(255, 255, 255, 0.35);
         }
 
-        .loading {
+        .splash {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            font-size: 0.9rem;
-            opacity: 0.2;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            font-weight: 400;
+            font-family: 'PP Valve', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 800;
+            font-size: clamp(3rem, 8vw, 6rem);
+            opacity: 0.15;
+            letter-spacing: -0.02em;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -204,7 +205,7 @@
     </svg>
 
     <div id="env-display">
-        <div class="loading">Collecting...</div>
+        <div class="splash">ENVSNAP</div>
     </div>
 
     <button class="float-btn" id="copyBtn" aria-label="Copy environment info to clipboard">
@@ -443,7 +444,7 @@
                 scrambleReveal(el);
             } catch (e) {
                 console.error('EnvSnap error:', e);
-                el.innerHTML = '<div class="loading">Error</div>';
+                el.innerHTML = '<div class="splash">ERROR</div>';
                 el.classList.add('ready');
             }
         }
