@@ -291,8 +291,10 @@ class EnvSnap {
 
     // OS Information
     output += '[OS]\n';
-    output += `  Name: ${data.os.name} ${data.os.version}\n`;
-    output += `  Platform: ${data.os.platform}\n`;
+    output += `  Name: ${data.os.versionEstimated ? data.os.name : `${data.os.name} ${data.os.version}`.trim()}\n`;
+    if (!data.os.platformEstimated) {
+      output += `  Platform: ${data.os.platform}\n`;
+    }
     output += `  64-bit: ${data.os.is64Bit ? 'Yes' : 'No/Unknown'}\n\n`;
 
     // Screen Information
@@ -307,7 +309,10 @@ class EnvSnap {
     output += `  Touch: ${data.device.touchSupport ? 'Yes' : 'No'}\n`;
     output += `  Mobile: ${data.device.isMobile ? 'Yes' : 'No'}\n`;
     output += `  Tablet: ${data.device.isTablet ? 'Yes' : 'No'}\n`;
-    output += `  CPU Cores: ${data.device.hardwareConcurrency}\n\n`;
+    if (!data.device.hardwareConcurrencyEstimated) {
+      output += `  CPU Cores: ${data.device.hardwareConcurrency}\n`;
+    }
+    output += '\n';
 
     // Network Information
     output += '[Network]\n';
