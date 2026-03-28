@@ -179,11 +179,17 @@ class EnvSnap {
   private static getDeviceInfo(): DeviceInfo {
     const ua = navigator.userAgent;
 
+    // Safari and iOS WebKit browsers cap hardwareConcurrency for fingerprinting protection
+    const isSafariOrWebKit = ua.indexOf('Safari') > -1 &&
+                             ua.indexOf('Chrome') === -1 &&
+                             ua.indexOf('OPR') === -1;
+
     return {
       touchSupport: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
       maxTouchPoints: navigator.maxTouchPoints || 0,
       devicePixelRatio: window.devicePixelRatio || 1,
       hardwareConcurrency: navigator.hardwareConcurrency || 'Unknown',
+      hardwareConcurrencyEstimated: isSafariOrWebKit,
       isMobile: /Mobile|Android|iPhone|iPad|iPod/i.test(ua),
       isTablet: /iPad|Android(?!.*Mobile)/i.test(ua),
       vibrationSupport: 'vibrate' in navigator
