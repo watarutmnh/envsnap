@@ -13,9 +13,9 @@ export interface BrowserInfo {
 export interface OSInfo {
   name: string;
   version: string;
-  versionEstimated: boolean;
+  versionEstimated?: boolean;
   platform: string;
-  platformEstimated: boolean;
+  platformEstimated?: boolean;
   is64Bit: boolean;
 }
 
@@ -38,7 +38,7 @@ export interface DeviceInfo {
   maxTouchPoints: number;
   devicePixelRatio: number;
   hardwareConcurrency: number | string;
-  hardwareConcurrencyEstimated: boolean;
+  hardwareConcurrencyEstimated?: boolean;
   isMobile: boolean;
   isTablet: boolean;
   vibrationSupport: boolean;
