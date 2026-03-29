@@ -172,17 +172,18 @@
             color: rgba(255, 255, 255, 0.35);
         }
 
-        .loading {
+        .splash {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            font-size: 0.9rem;
-            opacity: 0.2;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            font-weight: 400;
+            font-family: 'PP Valve', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 800;
+            font-size: clamp(3rem, 8vw, 6rem);
+            opacity: 0.15;
+            letter-spacing: -0.02em;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -204,7 +205,7 @@
     </svg>
 
     <div id="env-display">
-        <div class="loading">Collecting...</div>
+        <div class="splash">ENVSNAP</div>
     </div>
 
     <button class="float-btn" id="copyBtn" aria-label="Copy environment info to clipboard">
@@ -232,14 +233,19 @@
             if (data.browser.languages.length > 1) {
                 items.push({ label: 'Languages', value: data.browser.languages.join(', ') });
             }
-            items.push({ label: 'Platform', value: data.os.platform });
+            if (!data.os.platformEstimated) {
+                items.push({ label: 'Platform', value: data.os.platform });
+            }
             items.push({ label: 'Vendor', value: data.browser.vendor });
             items.push({ label: 'Cookies', value: data.browser.cookieEnabled ? 'Enabled' : 'Disabled' });
             if (data.browser.doNotTrack) {
                 items.push({ label: 'DNT', value: data.browser.doNotTrack });
             }
 
-            items.push({ label: 'OS', value: `${data.os.name} ${data.os.version}`.trim() });
+            const osValue = data.os.versionEstimated
+                ? data.os.name
+                : `${data.os.name} ${data.os.version}`.trim();
+            items.push({ label: 'OS', value: osValue });
             items.push({ label: 'Arch', value: data.os.is64Bit ? '64-bit' : '32-bit' });
 
             items.push({ label: 'Screen', value: `${data.screen.screenWidth}\u00d7${data.screen.screenHeight}` });
@@ -250,7 +256,9 @@
             items.push({ label: 'Orientation', value: data.screen.orientation });
 
             items.push({ label: 'Device', value: data.device.isMobile ? 'Mobile' : data.device.isTablet ? 'Tablet' : 'Desktop' });
-            items.push({ label: 'Cores', value: `${data.device.hardwareConcurrency}` });
+            if (!data.device.hardwareConcurrencyEstimated) {
+                items.push({ label: 'Cores', value: `${data.device.hardwareConcurrency}` });
+            }
             items.push({ label: 'DPR', value: `${data.device.devicePixelRatio}\u00d7` });
             items.push({ label: 'Touch', value: data.device.touchSupport ? `Yes (${data.device.maxTouchPoints}pt)` : 'No' });
             items.push({ label: 'Vibration', value: data.device.vibrationSupport ? 'Yes' : 'No' });
@@ -436,7 +444,7 @@
                 scrambleReveal(el);
             } catch (e) {
                 console.error('EnvSnap error:', e);
-                el.innerHTML = '<div class="loading">Error</div>';
+                el.innerHTML = '<div class="splash">ERROR</div>';
                 el.classList.add('ready');
             }
         }

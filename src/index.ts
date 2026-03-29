@@ -12,7 +12,7 @@ import type {
 export * from './types';
 
 class EnvSnap {
-  static readonly version = '1.2.0';
+  static readonly version = '1.3.0';
 
   /**
    * Collect all environment information
@@ -92,11 +92,14 @@ class EnvSnap {
         return {
           name: hints.platform || 'Unknown',
           version: hints.platformVersion || '',
+          versionEstimated: false,
           platform: hints.architecture || navigator.platform,
+          platformEstimated: false,
           is64Bit: hints.bitness === '64'
         };
       } catch {
-        // Fall through to UA string parsing
+        // getHighEntropyValues() rejected (e.g., cross-origin iframe, permissions policy)
+        // Fall through to UA string parsing with estimated flags
       }
     }
 
@@ -144,7 +147,9 @@ class EnvSnap {
     return {
       name: os,
       version: osVersion,
+      versionEstimated: true,
       platform: platform,
+      platformEstimated: true,
       is64Bit
     };
   }
@@ -174,11 +179,17 @@ class EnvSnap {
   private static getDeviceInfo(): DeviceInfo {
     const ua = navigator.userAgent;
 
+    // Safari and iOS WebKit browsers cap hardwareConcurrency for fingerprinting protection
+    const isSafariOrWebKit = ua.indexOf('Safari') > -1 &&
+                             ua.indexOf('Chrome') === -1 &&
+                             ua.indexOf('OPR') === -1;
+
     return {
       touchSupport: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
       maxTouchPoints: navigator.maxTouchPoints || 0,
       devicePixelRatio: window.devicePixelRatio || 1,
       hardwareConcurrency: navigator.hardwareConcurrency || 'Unknown',
+      hardwareConcurrencyEstimated: isSafariOrWebKit,
       isMobile: /Mobile|Android|iPhone|iPad|iPod/i.test(ua),
       isTablet: /iPad|Android(?!.*Mobile)/i.test(ua),
       vibrationSupport: 'vibrate' in navigator
@@ -280,8 +291,10 @@ class EnvSnap {
 
     // OS Information
     output += '[OS]\n';
-    output += `  Name: ${data.os.name} ${data.os.version}\n`;
-    output += `  Platform: ${data.os.platform}\n`;
+    output += `  Name: ${data.os.versionEstimated ? data.os.name : `${data.os.name} ${data.os.version}`.trim()}\n`;
+    if (!data.os.platformEstimated) {
+      output += `  Platform: ${data.os.platform}\n`;
+    }
     output += `  64-bit: ${data.os.is64Bit ? 'Yes' : 'No/Unknown'}\n\n`;
 
     // Screen Information
@@ -296,7 +309,10 @@ class EnvSnap {
     output += `  Touch: ${data.device.touchSupport ? 'Yes' : 'No'}\n`;
     output += `  Mobile: ${data.device.isMobile ? 'Yes' : 'No'}\n`;
     output += `  Tablet: ${data.device.isTablet ? 'Yes' : 'No'}\n`;
-    output += `  CPU Cores: ${data.device.hardwareConcurrency}\n\n`;
+    if (!data.device.hardwareConcurrencyEstimated) {
+      output += `  CPU Cores: ${data.device.hardwareConcurrency}\n`;
+    }
+    output += '\n';
 
     // Network Information
     output += '[Network]\n';
